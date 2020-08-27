@@ -115,5 +115,5 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scope>
-@import './Pagination';
+@import './style';
 </style>
