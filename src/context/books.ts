@@ -1,4 +1,4 @@
-import { provide, inject, ref, Ref } from 'vue'
+import { provide, inject, ref, Ref, computed } from 'vue'
 import { Book, Books } from '@/types'
 
 const BookSymbol = Symbol()
@@ -6,6 +6,8 @@ const BookSymbol = Symbol()
 type BookContext = {
   books: Ref<Books>
   setBooks: (value: Books) => void
+  finishedBooks: Ref<Books>
+  booksAvaluable: Ref<Books>
 }
 
 export const useBookListProvide = () => {
@@ -13,9 +15,20 @@ export const useBookListProvide = () => {
   const setBooks = (value: Books) => {
     books.value = value
   }
+  const finishedBooks = ref<Books>([])
+
+  // 可选图书
+  const booksAvaluable = computed(() => {
+    return books.value.filter(
+      book => !finishedBooks.value.find(({ id }) => id === book.id)
+    )
+  })
+
   provide(BookSymbol, {
     books,
-    setBooks
+    setBooks,
+    finishedBooks,
+    booksAvaluable
   })
 }
 
