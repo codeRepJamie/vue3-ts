@@ -14,6 +14,7 @@ export function usePages<T>(watchCallback: () => T[], pageOption?: PageOption) {
   const bindings = reactive({
     current: 1,
     currentChange: (currentPage: number) => {
+      bindings.current = currentPage
       data.value = sliceData(rawData.value, currentPage)
     }
   })

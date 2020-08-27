@@ -3,7 +3,14 @@
   <section v-else class="wrap">
     <section class="content">
       <Book v-for="book in pagedBooks" :key="book.id" :book="book" />
-      <Pagination />
+      <Pagination
+        class="pagination"
+        v-if="pagedBooks.length"
+        :pageSize="pageSize"
+        :total="books.length"
+        :current="bindings.current"
+        @current-change="bindings.currentChange"
+      />
       <slot name="tips"></slot>
     </section>
   </section>
@@ -14,7 +21,7 @@ import { defineComponent, watch, watchEffect, ref } from 'vue'
 import { usePages } from '@/hooks'
 import { Books } from '@/types'
 import Book from './Book.vue'
-import Pagination from './Pagination2.vue'
+import Pagination from './ElPagination/index.vue'
 
 export default defineComponent({
   props: {
@@ -39,7 +46,11 @@ export default defineComponent({
         pageSize,
       }
     )
-    return { pagedBooks, bindings: () => {}, pageSize }
+    return {
+      pagedBooks,
+      bindings,
+      pageSize,
+    }
   },
 })
 </script>
