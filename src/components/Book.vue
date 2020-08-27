@@ -60,7 +60,7 @@
         <small>{{ book.synopsis.substring(0, 500) }}...</small>
       </div>
     </a>
-    <!-- <StatusButtons :book="book" /> -->
+    <StatusButtons :book="book" />
   </div>
 </template>
 
@@ -68,6 +68,7 @@
 import { defineComponent } from 'vue'
 // @ts-ignore
 import harryCover from '@/assets/harry.png'
+import StatusButtons from '@/components/StatusButtons.vue'
 export default defineComponent({
   name: 'Book',
   props: {
@@ -75,6 +76,9 @@ export default defineComponent({
       type: Object,
       default: () => ({}),
     },
+  },
+  components: {
+    StatusButtons,
   },
   setup() {
     return {

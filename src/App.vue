@@ -18,7 +18,6 @@ export default defineComponent({
   name: 'App',
   components: {},
   setup(props, context) {
-    console.log(props, context, '1222')
     useProvide()
     const { booksAvaluable, finishedBooks } = useBookListInject()
     const route = useRoute()

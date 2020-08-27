@@ -36,7 +36,6 @@ export default defineComponent({
         pageSize,
       }
     )
-
     return { pagedBooks, bindings: () => {}, pageSize }
   },
 })

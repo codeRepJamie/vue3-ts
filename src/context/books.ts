@@ -5,9 +5,12 @@ const BookSymbol = Symbol()
 
 type BookContext = {
   books: Ref<Books>
-  setBooks: (value: Books) => void
   finishedBooks: Ref<Books>
   booksAvaluable: Ref<Books>
+  setBooks: (value: Books) => void
+  addFinishedBooks: (book: Book) => void
+  removeFinishedBooks: (book: Book) => void
+  hasReadedBook: (book: Book) => Boolean
 }
 
 export const useBookListProvide = () => {
@@ -19,16 +22,36 @@ export const useBookListProvide = () => {
 
   // 可选图书
   const booksAvaluable = computed(() => {
-    return books.value.filter(
-      book => !finishedBooks.value.find(({ id }) => id === book.id)
+    return books.value.filter(book =>
+      finishedBooks.value.every(({ id }) => id !== book.id)
     )
   })
+
+  const addFinishedBooks = (book: Book) => {
+    if (!hasReadedBook(book)) {
+      finishedBooks.value.push(book)
+    }
+  }
+
+  const removeFinishedBooks = (book: Book) => {
+    if (hasReadedBook(book)) {
+      finishedBooks.value.splice(
+        finishedBooks.value.findIndex(item => item.id === book.id),
+        1
+      )
+    }
+  }
+
+  const hasReadedBook = (book: Book) => finishedBooks.value.includes(book)
 
   provide(BookSymbol, {
     books,
     setBooks,
     finishedBooks,
-    booksAvaluable
+    booksAvaluable,
+    addFinishedBooks,
+    removeFinishedBooks,
+    hasReadedBook
   })
 }
 
