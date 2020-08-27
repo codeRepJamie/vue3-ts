@@ -1,8 +1,10 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">全部图书</router-link>
-      <router-link to="/finished">已阅图书</router-link>
+      <router-link to="/">全部图书({{ booksAvaluable.length }})</router-link>
+      <router-link to="/finished"
+        >已阅图书({{ finishedBooks.length }})</router-link
+      >
       <h2>目前共有{{ bookCount }}本图书</h2>
     </div>
     <router-view />
@@ -32,6 +34,8 @@ export default defineComponent({
 
     return {
       bookCount,
+      booksAvaluable,
+      finishedBooks,
     }
   },
 })

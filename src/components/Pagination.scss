@@ -1,0 +1,510 @@
+@import './var';
+@mixin b($block) {
+  $B: $namespace + '-' + $block !global;
+
+  .#{$B} {
+    @content;
+  }
+}
+
+@mixin e($element) {
+  $E: $element !global;
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $element {
+    $currentSelector: #{$currentSelector +
+      '.' +
+      $B +
+      $element-separator +
+      $unit +
+      ','};
+  }
+
+  @if hitAllSpecialNestRule($selector) {
+    @at-root {
+      #{$selector} {
+        #{$currentSelector} {
+          @content;
+        }
+      }
+    }
+  } @else {
+    @at-root {
+      #{$currentSelector} {
+        @content;
+      }
+    }
+  }
+}
+
+@mixin m($modifier) {
+  $selector: &;
+  $currentSelector: '';
+  @each $unit in $modifier {
+    $currentSelector: #{$currentSelector +
+      & +
+      $modifier-separator +
+      $unit +
+      ','};
+  }
+
+  @at-root {
+    #{$currentSelector} {
+      @content;
+    }
+  }
+}
+
+@mixin when($state) {
+  @at-root {
+    &.#{$state-prefix + $state} {
+      @content;
+    }
+  }
+}
+
+@mixin utils-clearfix {
+  $selector: &;
+
+  @at-root {
+    #{$selector}::before,
+    #{$selector}::after {
+      display: table;
+      content: '';
+    }
+    #{$selector}::after {
+      clear: both;
+    }
+  }
+}
+
+@include b(pagination) {
+  white-space: nowrap;
+  padding: 2px 5px;
+  color: $--pagination-font-color;
+  font-weight: bold;
+  @include utils-clearfix;
+
+  span:not([class*='suffix']),
+  button {
+    display: inline-block;
+    font-size: $--pagination-font-size;
+    min-width: $--pagination-button-width;
+    height: $--pagination-button-height;
+    line-height: $--pagination-button-height;
+    vertical-align: top;
+    box-sizing: border-box;
+  }
+
+  .el-input__inner {
+    text-align: center;
+    -moz-appearance: textfield;
+    line-height: normal;
+  }
+
+  // pagesize 的下拉 icon
+  .el-input__suffix {
+    right: 0;
+    transform: scale(0.8);
+  }
+
+  .el-select .el-input {
+    width: 100px;
+    margin: 0 5px;
+
+    .el-input__inner {
+      padding-right: 25px;
+      border-radius: $--pagination-border-radius;
+    }
+  }
+
+  button {
+    border: none;
+    padding: 0 6px;
+    background: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      color: $--pagination-hover-color;
+    }
+
+    &:disabled {
+      color: $--pagination-button-disabled-color;
+      background-color: $--pagination-button-disabled-background-color;
+      cursor: not-allowed;
+    }
+  }
+
+  .btn-prev,
+  .btn-next {
+    background: center center no-repeat;
+    background-size: 16px;
+    background-color: $--pagination-background-color;
+    cursor: pointer;
+    margin: 0;
+    color: $--pagination-button-color;
+
+    .el-icon {
+      display: block;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+
+  .btn-prev {
+    padding-right: 12px;
+  }
+
+  .btn-next {
+    padding-left: 12px;
+  }
+
+  .el-pager li.disabled {
+    color: $--color-text-placeholder;
+    cursor: not-allowed;
+  }
+
+  @include m(small) {
+    .btn-prev,
+    .btn-next,
+    .el-pager li,
+    .el-pager li.btn-quicknext,
+    .el-pager li.btn-quickprev,
+    .el-pager li:last-child {
+      border-color: transparent;
+      font-size: 12px;
+      line-height: 22px;
+      height: 22px;
+      min-width: 22px;
+    }
+
+    .arrow.disabled {
+      visibility: hidden;
+    }
+
+    .more::before,
+    li.more::before {
+      line-height: 24px;
+    }
+
+    span:not([class*='suffix']),
+    button {
+      height: 22px;
+      line-height: 22px;
+    }
+
+    @include e(editor) {
+      height: 22px;
+      &.el-input .el-input__inner {
+        height: 22px;
+      }
+    }
+  }
+
+  @include e(sizes) {
+    margin: 0 10px 0 0;
+    font-weight: normal;
+    color: $--color-text-regular;
+
+    .el-input .el-input__inner {
+      font-size: $--pagination-font-size;
+      padding-left: 8px;
+
+      &:hover {
+        border-color: $--pagination-hover-color;
+      }
+    }
+  }
+
+  @include e(total) {
+    margin-right: 10px;
+    font-weight: normal;
+    color: $--color-text-regular;
+  }
+
+  @include e(jump) {
+    margin-left: 24px;
+    font-weight: normal;
+    color: $--color-text-regular;
+
+    .el-input__inner {
+      padding: 0 3px;
+    }
+  }
+
+  @include e(rightwrapper) {
+    float: right;
+  }
+
+  @include e(editor) {
+    line-height: 18px;
+    padding: 0 2px;
+    height: $--pagination-button-height;
+
+    text-align: center;
+    margin: 0 2px;
+    box-sizing: border-box;
+    border-radius: $--pagination-border-radius;
+
+    &.el-input {
+      width: 50px;
+    }
+
+    &.el-input .el-input__inner {
+      height: $--pagination-button-height;
+    }
+
+    .el-input__inner::-webkit-inner-spin-button,
+    .el-input__inner::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  @include when(background) {
+    .btn-prev,
+    .btn-next,
+    .el-pager li {
+      margin: 0 5px;
+      background-color: $--color-info-lighter;
+      color: $--color-text-regular;
+      min-width: 30px;
+      border-radius: 2px;
+
+      &.disabled {
+        color: $--color-text-placeholder;
+      }
+    }
+
+    .btn-prev,
+    .btn-next {
+      padding: 0;
+
+      &:disabled {
+        color: $--color-text-placeholder;
+      }
+    }
+
+    .el-pager li:not(.disabled) {
+      &:hover {
+        color: $--pagination-hover-color;
+      }
+
+      &.active {
+        background-color: $--color-primary;
+        color: $--color-white;
+      }
+    }
+
+    &.el-pagination--small {
+      .btn-prev,
+      .btn-next,
+      .el-pager li {
+        margin: 0 3px;
+        min-width: 22px;
+      }
+    }
+  }
+}
+
+@include b(pager) {
+  user-select: none;
+  list-style: none;
+  display: inline-block;
+  vertical-align: top;
+  font-size: 0;
+  padding: 0;
+  margin: 0;
+
+  .more::before {
+    line-height: 30px;
+  }
+
+  li {
+    padding: 0 4px;
+    background: $--pagination-background-color;
+    vertical-align: top;
+    display: inline-block;
+    font-size: $--pagination-font-size;
+    min-width: $--pagination-button-width;
+    height: $--pagination-button-height;
+    line-height: $--pagination-button-height;
+    cursor: pointer;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 0;
+
+    &.btn-quicknext,
+    &.btn-quickprev {
+      line-height: 28px;
+      color: $--pagination-button-color;
+
+      &.disabled {
+        color: $--color-text-placeholder;
+      }
+    }
+
+    &.btn-quickprev:hover {
+      cursor: pointer;
+    }
+
+    &.btn-quicknext:hover {
+      cursor: pointer;
+    }
+
+    &.active + li {
+      border-left: 0;
+    }
+
+    &:hover {
+      color: $--pagination-hover-color;
+    }
+
+    &.active {
+      color: $--pagination-hover-color;
+      cursor: default;
+    }
+  }
+}
+
+/* select.scss */
+@include b(select) {
+  display: inline-block;
+  position: relative;
+
+  .el-select__tags > span {
+    display: contents;
+  }
+
+  &:hover {
+    .el-input__inner {
+      border-color: $--select-border-color-hover;
+    }
+  }
+
+  .el-input__inner {
+    cursor: pointer;
+    padding-right: 35px;
+
+    &:focus {
+      border-color: $--select-input-focus-border-color;
+    }
+  }
+
+  .el-input {
+    & .el-select__caret {
+      color: $--select-input-color;
+      font-size: $--select-input-font-size;
+      transition: transform 0.3s;
+      transform: rotateZ(180deg);
+      cursor: pointer;
+
+      @include when(reverse) {
+        transform: rotateZ(0deg);
+      }
+
+      @include when(show-close) {
+        font-size: $--select-font-size;
+        text-align: center;
+        transform: rotateZ(180deg);
+        border-radius: $--border-radius-circle;
+        color: $--select-input-color;
+        transition: $--color-transition-base;
+
+        &:hover {
+          color: $--select-close-hover-color;
+        }
+      }
+    }
+
+    &.is-disabled {
+      & .el-input__inner {
+        cursor: not-allowed;
+
+        &:hover {
+          border-color: $--select-disabled-border;
+        }
+      }
+    }
+
+    &.is-focus .el-input__inner {
+      border-color: $--select-input-focus-border-color;
+    }
+  }
+
+  > .el-input {
+    display: block;
+  }
+
+  @include e(input) {
+    border: none;
+    outline: none;
+    padding: 0;
+    margin-left: 15px;
+    color: $--select-multiple-input-color;
+    font-size: $--select-font-size;
+    appearance: none;
+    height: 28px;
+    background-color: transparent;
+    @include when(mini) {
+      height: 14px;
+    }
+  }
+
+  @include e(close) {
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    z-index: $--index-top;
+    right: 25px;
+    color: $--select-input-color;
+    line-height: 18px;
+    font-size: $--select-input-font-size;
+
+    &:hover {
+      color: $--select-close-hover-color;
+    }
+  }
+
+  @include e(tags) {
+    position: absolute;
+    line-height: normal;
+    white-space: normal;
+    z-index: $--index-normal;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .el-tag__close {
+    margin-top: -2px;
+  }
+
+  .el-tag {
+    box-sizing: border-box;
+    border-color: transparent;
+    margin: 2px 0 2px 6px;
+    background-color: #f0f2f5;
+
+    &__close.el-icon-close {
+      background-color: $--color-text-placeholder;
+      right: -7px;
+      top: 0;
+      color: $--color-white;
+
+      &:hover {
+        background-color: $--color-text-secondary;
+      }
+
+      &::before {
+        display: block;
+        transform: translate(0, 0.5px);
+      }
+    }
+  }
+}
